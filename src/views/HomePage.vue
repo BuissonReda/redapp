@@ -2,7 +2,7 @@
   <ion-page>
     <ion-header :translucent="true">
       <ion-toolbar>
-        <ion-title>Blank</ion-title>
+        <ion-title>Home</ion-title>
       </ion-toolbar>
     </ion-header>
 
@@ -20,8 +20,9 @@
           </ion-card-header>
 
           <ion-card-content>
-            The current temperature in {{ city }} is: {{ weatherDatas.bb_pos }}
-            Horoscope: {{ horoscopeDatas.body }}
+            <p class="temperature">The current temperature in {{ city }} is: {{ parseInt(currentTemperature) }}°</p>
+            <p class="horoscope">Horoscope: {{ horoscope }}</p>
+            <p class="text">Have a good day! 🌞</p>
           </ion-card-content>
         </ion-card>
       </div>
@@ -34,27 +35,56 @@ import { IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonHe
 
 import { fetchWeatherApi } from 'openmeteo';
 
-let name, birthDate, city, weatherDatas = {bb_pos: ''}, horoscopeDatas = {}
+let name, birthDate, city, horoscope = ''
+let weatherDatas = {}
+let currentTemperature = ''
 
 name = localStorage.getItem('name')
 birthDate = localStorage.getItem('birthDate')
 city = localStorage.getItem('city')
+let zodiacSign = getSignFromBirthDate(birthDate)
 
-getHoroscopeDatas('scorpio').then(result => {
-  horoscopeDatas = result.body
-  console.log(result)
+getHoroscopeDatas(zodiacSign).then(result => {
+  horoscope = result.horoscope
 })
 
 getWeatherDatas(city).then(result => {
-  weatherDatas = result[0]
+  const currentHour = new Date().getHours()
+
+  currentTemperature = weatherDatas.hourly.temperature2m[currentHour]
 })
 
 async function getWeatherDatas(city) {
   const params = {
 	"latitude": 43.6043,
-	"longitude": 1.4437
+	"longitude": 1.4437,
+  "hourly": "temperature_2m"
   }
+
   const url = "https://api.open-meteo.com/v1/forecast"
+  const responses = await fetchWeatherApi(url, params)
+
+  // Process first location. Add a for-loop for multiple locations or weather models
+  const response = responses[0]
+
+  // Attributes for timezone and location
+  const utcOffsetSeconds = response.utcOffsetSeconds()
+  const timezone = response.timezone()
+  const timezoneAbbreviation = response.timezoneAbbreviation()
+  const latitude = response.latitude()
+  const longitude = response.longitude()
+
+  const hourly = response.hourly()!
+
+  // Note: The order of weather variables in the URL query and the indices below need to match!
+  weatherDatas = {
+    hourly: {
+      time: [...Array((Number(hourly.timeEnd()) - Number(hourly.time())) / hourly.interval())].map(
+        (_, i) => new Date((Number(hourly.time()) + i * hourly.interval() + utcOffsetSeconds) * 1000)
+      ),
+      temperature2m: hourly.variables(0)!.valuesArray()!,
+    },
+  }
 
   try {
     return await fetchWeatherApi(url, params)
@@ -63,14 +93,30 @@ async function getWeatherDatas(city) {
   }
 }
 
-async function getHoroscopeDatas(sign) {
-  const url = 'https://api.api-ninjas.com/v1/horoscope?zodiac=' + sign
+async function getHoroscopeDatas(zodiacSign) {
+  const url = 'https://api.api-ninjas.com/v1/horoscope?zodiac=' + zodiacSign
 
   try {
-    return await fetch(url)
+    return (await fetch(url)).json()
   } catch (error) {
     console.error(error.message)
   }
+}
+
+function getSignFromBirthDate(birthDate) {
+  let date = new Date(birthDate)
+  const days = [21, 20, 21, 21, 22, 22, 23, 24, 24, 24, 23, 22]
+  const signs = ["Aquarius", "Pisces", "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn"]
+  let month = date.getMonth()
+  let day = date.getDate()
+
+  if(month == 0 && day <= 20){
+    month = 11
+  } else if(day < days[month]){
+    month--
+  }
+  
+  return signs[month]
 }
 
 </script>
@@ -102,5 +148,13 @@ async function getHoroscopeDatas(sign) {
 
 #container a {
   text-decoration: none;
+}
+
+.temperature {
+  padding-bottom: 16px;
+}
+
+.horoscope {
+  padding-bottom: 16px;
 }
 </style>
