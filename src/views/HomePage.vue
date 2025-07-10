@@ -1,24 +1,5 @@
 <template>
-   <ion-menu :type="menuType" content-id="main-content">
-    <ion-header>
-      <ion-toolbar>
-        <ion-title>Menu Content</ion-title>
-      </ion-toolbar>
-    </ion-header>
-    <ion-content class="ion-padding">
-      <ion-menu-toggle>
-        <ion-button>Click to close the menu</ion-button>
-      </ion-menu-toggle>
-    </ion-content>
-  </ion-menu>
-
   <ion-page id="main-content">
-    <ion-header :translucent="true">
-      <ion-toolbar>
-        <ion-title>Home</ion-title>
-      </ion-toolbar>
-    </ion-header>
-
     <ion-content :fullscreen="true">
       <ion-header collapse="condense">
         <ion-toolbar>
@@ -44,14 +25,12 @@
 </template>
 
 <script setup lang="ts">
-import { IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonHeader, IonMenu, IonMenuToggle,  IonPage, IonTitle, IonToolbar } from '@ionic/vue'
-import { ref } from 'vue'
+import { IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/vue'
 import { fetchWeatherApi } from 'openmeteo'
 
 let name, birthDate, city, horoscope = ''
 let weatherDatas = {}
 let currentTemperature = ''
-const menuType = ref('overlay');
 
 name = localStorage.getItem('name')
 birthDate = localStorage.getItem('birthDate')
@@ -64,7 +43,6 @@ getHoroscopeDatas(zodiacSign).then(result => {
 
 getWeatherDatas(city).then(result => {
   const currentHour = new Date().getHours()
-
   currentTemperature = weatherDatas.hourly.temperature2m[currentHour]
 })
 
@@ -170,5 +148,15 @@ function getSignFromBirthDate(birthDate) {
 
 .horoscope {
   padding-bottom: 16px;
+}
+
+ion-menu::part(backdrop) {
+  background-color: rgba(0, 0, 0, 0.266);
+}
+
+ion-menu::part(container) {
+  border-radius: 0 20px 20px 0;
+
+  box-shadow: 4px 0px 16px rgba(0, 0, 0, 0.18);
 }
 </style>
