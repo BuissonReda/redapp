@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { IonButton, IonContent, IonHeader, IonPage, IonTextarea, IonTitle, IonToolbar } from '@ionic/vue'
+import { IonButton, IonCol, IonContent, IonHeader, IonGrid, IonPage, IonRow, IonTextarea, IonTitle, IonToolbar } from '@ionic/vue'
 
 let value = localStorage.getItem('notes')
 

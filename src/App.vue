@@ -33,8 +33,8 @@
 </template>
 
 <script setup lang="ts">
-import { IonApp, IonContent, IonMenu, IonRouterOutlet, IonSplitPane, IonIcon, IonItem, IonLabel, IonList, IonListHeader, 
-         IonMenuToggle, IonNote } from '@ionic/vue'
+import { IonApp, IonButtons, IonContent, IonMenu, IonHeader, IonRouterOutlet, IonIcon, IonItem, IonLabel, IonList, IonMenuButton,
+         IonMenuToggle, IonPage, IonTitle, IonToolbar } from '@ionic/vue'
 import { ref } from 'vue'
 import {
   checkboxOutline,
