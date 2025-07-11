@@ -1,12 +1,11 @@
 <template>
   <ion-page id="main-content">
+    <ion-header :translucent="true">
+      <ion-toolbar>
+        <ion-title>Home</ion-title>
+      </ion-toolbar>
+    </ion-header>
     <ion-content :fullscreen="true">
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large">My app</ion-title>
-        </ion-toolbar>
-      </ion-header>
-
       <div id="container">
          <ion-card>
           <ion-card-header>
