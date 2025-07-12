@@ -13,9 +13,12 @@
           </ion-card-header>
 
           <ion-card-content>
-            <p class="temperature">The current temperature in {{ city }} is: {{ parseInt(currentTemperature) }}°</p>
-            <p class="horoscope">Horoscope: {{ horoscope }}</p>
-            <p class="text">Have a good day! 🌞</p>
+            <div v-if="!areDatasReady">Getting datas...</div>
+            <div v-if="areDatasReady">
+              <p class="temperature">The current temperature in {{ city }} is: {{ parseInt(currentTemperature) }}°</p>
+              <p class="horoscope">Horoscope: {{ horoscope }}</p>
+              <p class="text">Have a good day! 🌞</p>
+            </div>
           </ion-card-content>
         </ion-card>
       </div>
@@ -30,6 +33,7 @@ import { fetchWeatherApi } from 'openmeteo'
 let name, birthDate, city, horoscope = ''
 let weatherDatas = {}
 let currentTemperature = ''
+let areDatasReady = false
 
 name = localStorage.getItem('name')
 birthDate = localStorage.getItem('birthDate')
@@ -38,18 +42,20 @@ let zodiacSign = getSignFromBirthDate(birthDate)
 
 getHoroscopeDatas(zodiacSign).then(result => {
   horoscope = result.horoscope
+  areDatasReady = true
 })
 
 getWeatherDatas(city).then(result => {
   const currentHour = new Date().getHours()
   currentTemperature = weatherDatas.hourly.temperature2m[currentHour]
+  areDatasReady = true
 })
 
 async function getWeatherDatas(city) {
   const params = {
-	"latitude": 43.6043,
-	"longitude": 1.4437,
-  "hourly": "temperature_2m"
+    "latitude": 43.6043,
+    "longitude": 1.4437,
+    "hourly": "temperature_2m"
   }
 
   const url = "https://api.open-meteo.com/v1/forecast"
@@ -60,11 +66,6 @@ async function getWeatherDatas(city) {
 
   // Attributes for timezone and location
   const utcOffsetSeconds = response.utcOffsetSeconds()
-  const timezone = response.timezone()
-  const timezoneAbbreviation = response.timezoneAbbreviation()
-  const latitude = response.latitude()
-  const longitude = response.longitude()
-
   const hourly = response.hourly()!
 
   // Note: The order of weather variables in the URL query and the indices below need to match!

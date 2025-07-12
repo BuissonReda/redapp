@@ -15,7 +15,7 @@
             </ion-buttons>
             <ion-title>Todo creation</ion-title>
             <ion-buttons slot="end">
-              <ion-button :strong="true" @click="createTodo">Create</ion-button>
+              <ion-button :strong="true" @click="createTodo" color="primary">Create</ion-button>
             </ion-buttons>
           </ion-toolbar>
         </ion-header>
