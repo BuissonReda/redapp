@@ -48,7 +48,8 @@
 </template>
 
 <script setup lang="ts">
-import { IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonModal, IonPage, IonTitle, IonToolbar } from '@ionic/vue'
+import { IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonInput, IonItem,
+         IonLabel, IonList, IonModal, IonPage, IonTitle, IonToolbar } from '@ionic/vue'
 import { closeCircle } from 'ionicons/icons'
 import { ref } from 'vue'
 
@@ -72,6 +73,12 @@ const createTodo = () => {
 const removeTodo = (todo) => {
   let todosInStorage = localStorage.getItem('todos')?.split(';')
   console.log(todosInStorage)
+}
+
+const handleRefresh = (event: RefresherCustomEvent) => {
+  setTimeout(() => {
+    event.target.complete()
+  }, 2000)
 }
 
 todosAsList = todosInStorage ? todosInStorage.split(';') : []

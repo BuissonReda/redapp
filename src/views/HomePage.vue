@@ -13,12 +13,9 @@
           </ion-card-header>
 
           <ion-card-content>
-            <div v-if="!areDatasReady">Getting datas...</div>
-            <div v-if="areDatasReady">
-              <p class="temperature">The current temperature in {{ city }} is: {{ parseInt(currentTemperature) }}°</p>
-              <p class="horoscope">Horoscope: {{ horoscope }}</p>
-              <p class="text">Have a good day! 🌞</p>
-            </div>
+            <p class="temperature">The current temperature in {{ city }} is: {{ parseInt(currentTemperature) }}°</p>
+            <p class="horoscope">Horoscope du {{ todayDate }}: {{ horoscope }}</p>
+            <p class="text">Have a good day! 🌞</p>
           </ion-card-content>
         </ion-card>
       </div>
@@ -33,8 +30,11 @@ import { fetchWeatherApi } from 'openmeteo'
 let name, birthDate, city, horoscope = ''
 let weatherDatas = {}
 let currentTemperature = ''
-let areDatasReady = false
+let todayDate = ''
 
+let date = new Date()
+let month = date.getMonth() + 1
+todayDate += date.getDate() + '/' + month + '/' + date.getFullYear()
 name = localStorage.getItem('name')
 birthDate = localStorage.getItem('birthDate')
 city = localStorage.getItem('city')
@@ -42,13 +42,11 @@ let zodiacSign = getSignFromBirthDate(birthDate)
 
 getHoroscopeDatas(zodiacSign).then(result => {
   horoscope = result.horoscope
-  areDatasReady = true
 })
 
 getWeatherDatas(city).then(result => {
   const currentHour = new Date().getHours()
   currentTemperature = weatherDatas.hourly.temperature2m[currentHour]
-  areDatasReady = true
 })
 
 async function getWeatherDatas(city) {
@@ -61,14 +59,11 @@ async function getWeatherDatas(city) {
   const url = "https://api.open-meteo.com/v1/forecast"
   const responses = await fetchWeatherApi(url, params)
 
-  // Process first location. Add a for-loop for multiple locations or weather models
   const response = responses[0]
 
-  // Attributes for timezone and location
   const utcOffsetSeconds = response.utcOffsetSeconds()
   const hourly = response.hourly()!
 
-  // Note: The order of weather variables in the URL query and the indices below need to match!
   weatherDatas = {
     hourly: {
       time: [...Array((Number(hourly.timeEnd()) - Number(hourly.time())) / hourly.interval())].map(
@@ -102,12 +97,12 @@ function getSignFromBirthDate(birthDate) {
   let month = date.getMonth()
   let day = date.getDate()
 
-  if(month == 0 && day <= 20){
+  if(month == 0 && day <= 20) {
     month = 11
-  } else if(day < days[month]){
+  } else if(day < days[month]) {
     month--
   }
-  
+
   return signs[month]
 }
 
