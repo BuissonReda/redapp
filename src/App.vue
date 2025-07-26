@@ -37,12 +37,8 @@ import { IonApp, IonButtons, IonContent, IonMenu, IonHeader, IonRouterOutlet, Io
          IonMenuToggle, IonPage, IonTitle, IonToolbar } from '@ionic/vue'
 import { ref } from 'vue'
 import {
-  checkboxOutline,
-  checkboxSharp,
   homeOutline,
-  homeSharp,
-  pencilOutline,
-  pencilSharp
+  homeSharp
 } from 'ionicons/icons'
 
 const selectedIndex = ref(0)
@@ -53,18 +49,6 @@ const appPages = [
     url: '/home',
     iosIcon: homeOutline,
     mdIcon: homeSharp,
-  },
-  {
-    title: 'Notes',
-    url: '/notes',
-    iosIcon: pencilOutline,
-    mdIcon: pencilSharp,
-  },
-  {
-    title: 'Todos',
-    url: '/todos',
-    iosIcon: checkboxOutline,
-    mdIcon: checkboxSharp,
   }
 ]
 
