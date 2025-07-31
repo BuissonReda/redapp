@@ -41,6 +41,22 @@ import {
   homeSharp
 } from 'ionicons/icons'
 
+import { initializeApp } from "firebase/app"
+import { getAnalytics } from "firebase/analytics"
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC6bjQMHSjXxBa6r2FS_Fpge9gwZAaA4d8",
+  authDomain: "my-app-e1145.firebaseapp.com",
+  projectId: "my-app-e1145",
+  storageBucket: "my-app-e1145.firebasestorage.app",
+  messagingSenderId: "482156778808",
+  appId: "1:482156778808:web:c6889e7c81f1c12cc29dcd",
+  measurementId: "G-6NGSDKZBTM"
+}
+
+const app = initializeApp(firebaseConfig)
+const analytics = getAnalytics(app)
+
 const selectedIndex = ref(0)
 
 const appPages = [
